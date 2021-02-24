@@ -4,6 +4,14 @@ project(
   version: '0.0.1',
   license: 'AGPL',
   meson_version: '>=0.56.0'
-  )
+)
 
-executable('bot', 'src/main.cpp')
+executable(
+  'bot',
+  'src/main.cpp',
+  dependencies: [
+    dependency('openssl'),
+    dependency('cpr'),
+    dependency('websocketpp')
+  ]
+)
