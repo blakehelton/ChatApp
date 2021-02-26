@@ -21,18 +21,18 @@ sd_defs = [
   'EXISTENT_CPR=1'
 ]
 
-sd_flags = []
 if comp.get_argument_syntax() == 'msvc'
   ignore_warns = '/w'
-  foreach def : sd_defs
-    sd_flags += '/D' + def
-  endforeach
+  def_flag = '/D'
 else
   ignore_warns = '-w'
-  foreach def : sd_defs
-    sd_flags += '-D' + def
-  endforeach
+  def_flag = '-D'
 endif
+
+sd_flags = []
+foreach def : sd_defs
+  sd_flags += def_flag + def
+endforeach
 
 sd_cmake_opts = cmake.subproject_options()
 sd_cmake_opts.add_cmake_defines({'ONLY_SLEEPY_DISCORD': true})
