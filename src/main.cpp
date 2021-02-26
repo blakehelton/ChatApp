@@ -1,3 +1,17 @@
 #include <iostream>
+#include <sleepy_discord.h>
 
-int main() { std::cout << "Hello World!\n"; }
+class MyClientClass : public SleepyDiscord::DiscordClient {
+public:
+  using SleepyDiscord::DiscordClient::DiscordClient;
+  void onMessage(SleepyDiscord::Message message) override {
+    if (message.startsWith("whcg hello"))
+      sendMessage(message.channelID, "Hello " + message.author.username);
+  }
+};
+
+int main() {
+  std::cout << "test";
+  MyClientClass client("token", SleepyDiscord::USER_CONTROLED_THREADS);
+  client.run();
+}
