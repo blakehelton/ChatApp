@@ -56,6 +56,5 @@ executable('bot',
     dependency('asio'),
     dependency('opus'),
     sd_lib
-  ],
-  # cpp_args: sd_flags
+  ]
 )
