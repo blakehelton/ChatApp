@@ -25,10 +25,10 @@ opt_var.append_compile_args('cpp', defs, '-fPIC')
 sd = cmake.subproject('sleepy-discord', options: opt_var)
 sd_lib = sd.dependency('sleepy-discord')
 
-executable(
-  'bot',
+executable('bot',
   'src/main.cpp',
   dependencies: [
+    dependency('fmt'),
     dependency('openssl'),
     dependency('cpr'),
     dependency('websocketpp'),
