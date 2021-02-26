@@ -11,7 +11,6 @@ public:
 };
 
 int main() {
-  std::cout << "test";
   MyClientClass client("token", SleepyDiscord::USER_CONTROLED_THREADS);
   client.run();
 }
