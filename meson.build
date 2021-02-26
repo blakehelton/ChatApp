@@ -38,10 +38,10 @@ sd_cmake_opts = cmake.subproject_options()
 sd_cmake_opts.add_cmake_defines({'ONLY_SLEEPY_DISCORD': true})
 sd_cmake_opts.append_compile_args('cpp', sd_flags, ignore_warns, pic: true)
 
-sd = cmake.subproject('sleepy-discord', options: sd_cmake_opts)
-sd_lib = declare_dependency(
+sd_cmake = cmake.subproject('sleepy-discord', options: sd_cmake_opts)
+sd = declare_dependency(
   compile_args: sd_flags,
-  dependencies: sd.dependency('sleepy-discord', include_type: 'system')
+  dependencies: sd_cmake.dependency('sleepy-discord', include_type: 'system')
 )
 
 ### Bot ###
@@ -55,6 +55,6 @@ executable('bot',
     dependency('websocketpp'),
     dependency('asio'),
     dependency('opus'),
-    sd_lib
+    sd
   ]
 )
