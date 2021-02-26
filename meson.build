@@ -7,23 +7,44 @@ project(
   default_options: ['cpp_std=c++17']
 )
 
-defs = [
-  '-DNONEXISTENT_UWEBSOCKETS=1',
-  '-DEXISTENT_WEBSOCKETPP=1',
-  '-DEXISTENT_OPUS=1',
-  '-DEXISTENT_ASIO=1',
-  '-DEXISTENT_CPR=1'
-]
-
-# Set up sleepy-discord subproject
 cmake = import('cmake')
 
-opt_var = cmake.subproject_options()
-opt_var.add_cmake_defines({'ONLY_SLEEPY_DISCORD': true, 'ENABLE_VOICE': false})
-opt_var.append_compile_args('cpp', defs, '-fPIC')
+comp = meson.get_compiler('cpp')
 
-sd = cmake.subproject('sleepy-discord', options: opt_var)
-sd_lib = sd.dependency('sleepy-discord')
+### Sleepy-Discord ###
+
+sd_defs = [
+  'NONEXISTENT_UWEBSOCKETS=1',
+  'EXISTENT_WEBSOCKETPP=1',
+  'EXISTENT_OPUS=1',
+  'EXISTENT_ASIO=1',
+  'EXISTENT_CPR=1'
+]
+
+sd_flags = []
+if comp.get_argument_syntax() == 'msvc'
+  ignore_warns = '/w'
+  foreach def : sd_defs
+    sd_flags += '/D' + def
+  endforeach
+else
+  ignore_warns = '-w'
+  foreach def : sd_defs
+    sd_flags += '-D' + def
+  endforeach
+endif
+
+sd_cmake_opts = cmake.subproject_options()
+sd_cmake_opts.add_cmake_defines({'ONLY_SLEEPY_DISCORD': true})
+sd_cmake_opts.append_compile_args('cpp', sd_flags, ignore_warns, pic: true)
+
+sd = cmake.subproject('sleepy-discord', options: sd_cmake_opts)
+sd_lib = declare_dependency(
+  compile_args: sd_flags,
+  dependencies: sd.dependency('sleepy-discord', include_type: 'system')
+)
+
+### Bot ###
 
 executable('bot',
   'src/main.cpp',
@@ -36,5 +57,5 @@ executable('bot',
     dependency('opus'),
     sd_lib
   ],
-  cpp_args: defs
+  # cpp_args: sd_flags
 )
